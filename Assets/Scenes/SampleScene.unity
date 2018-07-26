@@ -198,7 +198,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   nb_letters: 0
-  letters: []
 --- !u!4 &352902332
 Transform:
   m_ObjectHideFlags: 0
