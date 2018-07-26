@@ -17,7 +17,7 @@ public class GameGenerator : MonoBehaviour {
         reshuffle(letters);
         foreach (GameObject item in letters)
         {
-            Debug.Log(item.name);
+            Debug.Log(item.name); 
         }
 
     }
