@@ -6,6 +6,7 @@ public class GameGenerator : MonoBehaviour {
     public int                  nb_letters;
     private GameObject[]        letters;
     private GameObject[]        dismissed;
+    private AudioSource          sound;
 
     // Use this for initialization
     void Start()
@@ -45,6 +46,10 @@ public class GameGenerator : MonoBehaviour {
     void initLetters()
     {
         int i = 0;
+        sound = (GameObject.Find("SoundObject")).GetComponent<AudioSource>();
+        string letter = GetLetter();
+        sound.clip = Resources.Load<AudioClip>(letter);
+        sound.Play();
 
         letters = GameObject.FindGameObjectsWithTag("Letter");
         reshuffle(letters);
@@ -63,6 +68,14 @@ public class GameGenerator : MonoBehaviour {
             item.SetActive(false);
     }
 
+    public static string GetLetter()
+    {
+        // This method returns a random lowercase letter.
+        // ... Between 'a' and 'z' inclusize.
+        int num = Random.Range(0, 26); // Zero to 25
+        char let = (char)('a' + num);
+        return let.ToString();
+    }
 
     void reshuffle(GameObject[] array)
     {
