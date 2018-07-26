@@ -3,37 +3,66 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class GameGenerator : MonoBehaviour {
+    public int                  max_turns;
+    public int                  timer;
     public int                  nb_letters;
+    private int                 curr_timer;
+    private int                 turns = 0;
     private GameObject[]        letters;
     private GameObject[]        dismissed;
-    private AudioSource          sound;
+    private AudioSource         sound;
+    private bool                gameAlive;
 
     // Use this for initialization
     void Start()
     {
-        dismissed = GameObject.FindGameObjectsWithTag("Dismissed");
-        InvokeRepeating("_main", 1.0f, 1.0f);
+        gameAlive = true;
+        if (nb_letters < 5)
+            nb_letters = 5;
+        if (max_turns == 0)
+            max_turns = 5;
+        if (timer < 5)
+        {
+            timer = 5;
+        }
+        curr_timer = timer;
+        InvokeRepeating("curr_timer", 0, 1.0);
     }
 	
 	// Update is called once per frame
-	void Update () {
+	void Update ()
+    {
+        if (turns <= max_turns)
+        {
+            if (curr_timer <= 0)
+            {
+                dismissed = GameObject.FindGameObjectsWithTag("Dismissed");
+                _main();
+                turns++;
+                curr_timer = timer;
+            }
+        }
+        else
+        {
+            gameAlive = false;0
+        }
     }
     
+    void decreaseTimer()
+    {
+        curr_timer--;
+    }
+
     void _main()
     {
         reinit();
-        if (nb_letters < 5)
-            nb_letters = 5;
         initLetters();
-        foreach (GameObject item in (GameObject.FindGameObjectsWithTag("Letter")))
-        {
-            //Debug.Log(item.name);
-        }
     }
 
     void reinit()
     {
         Debug.Log(dismissed.Length);
+
         foreach (GameObject item in dismissed)
         {
             Debug.Log(item.name);
@@ -46,8 +75,10 @@ public class GameGenerator : MonoBehaviour {
     void initLetters()
     {
         int i = 0;
+
         sound = (GameObject.Find("SoundObject")).GetComponent<AudioSource>();
-        string letter = GetLetter();
+        string letter = GetRandomLetter();
+
         sound.clip = Resources.Load<AudioClip>(letter);
         sound.Play();
 
@@ -68,11 +99,9 @@ public class GameGenerator : MonoBehaviour {
             item.SetActive(false);
     }
 
-    public static string GetLetter()
+    public static string GetRandomLetter()
     {
-        // This method returns a random lowercase letter.
-        // ... Between 'a' and 'z' inclusize.
-        int num = Random.Range(0, 26); // Zero to 25
+        int num = Random.Range(0, 26);
         char let = (char)('a' + num);
         return let.ToString();
     }
