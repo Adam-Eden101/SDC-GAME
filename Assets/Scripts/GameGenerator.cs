@@ -4,23 +4,37 @@ using UnityEngine;
 
 public class GameGenerator : MonoBehaviour
 {
-    public int nb_letters;
-    public GameObject[] letters;
-    public int                  max_turns;
-    public int                  timer;
     public int                  nb_letters;
-    private int                 curr_timer;
-    private int                 turns = 0;
     private GameObject[]        letters;
     private GameObject[]        dismissed;
+    public int                  max_turns;
+    public int                  timer;
+    private int                 curr_timer;
+    private int                 turns = 0;
     private AudioSource         sound;
     private bool                gameAlive;
+
+    IDictionary<char, GameObject[]> sprites;
 
     // Use this for initialization
     void Start()
     {
-        InvokeRepeating("changeLetters", 3.0f, 3.0f);
+        // Init ressource needed before changin letters and needed only once
+        sprites = new Dictionary<char, GameObject[]>();
+
+        for (char c = 'A'; c <= 'Z'; c++)
+        {
+            sprites[c] = GameObject.FindGameObjectsWithTag("Letter_" + c);
+        }
+
         letters = GameObject.FindGameObjectsWithTag("Letters");
+
+        if (nb_letters < 5)
+            nb_letters = 5;
+        if (max_turns == 0)
+            max_turns = 5;
+
+        InvokeRepeating("changeLetters", 1.0f, 3.0f);
        
     }
 
@@ -33,20 +47,14 @@ public class GameGenerator : MonoBehaviour
     void changeLetters()
     {
         //TO CHANGE
-        char letter_to_find = 'G';
-        int nbr_of_letter_possibly_to_find = 1; // from 1 to 5
-
-        // Init ressource needed before changin letters and needed only once
-        IDictionary<char, GameObject[]> sprites = new Dictionary<char, GameObject[]>(); 
-        for (char c = 'A'; c <= 'Z'; c++)
-        {
-            sprites[c] = GameObject.FindGameObjectsWithTag("Letter_" + c);
-        }
-
-        ////////////////////////////////////////////
-
+        char letter_to_find = GetRandomLetter();
+        int nbr_of_letter_possibly_to_find = Random.Range(1, 5);
 
         List<GameObject> sprite_to_render = new List<GameObject>();
+
+        playLetterSound(letter_to_find);
+
+
         for (int i = 0; i < 100; i++)
         {
             char c = GetRandomLetter();
@@ -65,16 +73,13 @@ public class GameGenerator : MonoBehaviour
             }
         }
 
-
         int nbr_sprite_letter_to_find = 0;
         foreach (GameObject tmp in sprites[letter_to_find])
         {
             nbr_sprite_letter_to_find++;
         }
-
-
-
-        letters = GameObject.FindGameObjectsWithTag("Letters");
+        
+        letters = GameObject.FindGameObjectsWithTag("Letter");
         int amount = 0;
         foreach (GameObject item in letters)
         {
@@ -104,26 +109,26 @@ public class GameGenerator : MonoBehaviour
 
     void reinit()
     {
-        Debug.Log(dismissed.Length);
 
         foreach (GameObject item in dismissed)
         {
-            Debug.Log(item.name);
             item.tag = "Letter";
             item.SetActive(true);
         }
 
     }
 
+    void playLetterSound(char letter)
+    {
+        sound = (GameObject.Find("SoundObject")).GetComponent<AudioSource>();
+
+        sound.clip = Resources.Load<AudioClip>(letter.ToString());
+        sound.Play();
+    }
+
     void initLetters()
     {
         int i = 0;
-
-        sound = (GameObject.Find("SoundObject")).GetComponent<AudioSource>();
-        string letter = GetRandomLetter();
-
-        sound.clip = Resources.Load<AudioClip>(letter);
-        sound.Play();
 
         letters = GameObject.FindGameObjectsWithTag("Letter");
         reshuffle(letters);
@@ -142,13 +147,6 @@ public class GameGenerator : MonoBehaviour
             item.SetActive(false);
     }
 
-    public static string GetRandomLetter()
-    {
-        int num = Random.Range(0, 26);
-        char let = (char)('a' + num);
-        return let.ToString();
-    }
-
     void reshuffle(GameObject[] array)
     {
         // Knuth shuffle algorithm :: courtesy of Wikipedia :)
@@ -160,5 +158,4 @@ public class GameGenerator : MonoBehaviour
             array[r] = tmp;
         }
     }
-}
 }
