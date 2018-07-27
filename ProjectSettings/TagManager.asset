@@ -31,6 +31,8 @@ TagManager:
   - Letter_X
   - Letter_Y
   - Letter_Z
+  - Letter
+  - Dismissed
   layers:
   - Default
   - TransparentFX
