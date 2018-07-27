@@ -539,7 +539,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   max_turns: 0
-  nb_letters: 20
+  timer: 0
+  nb_letters: 6
 --- !u!4 &352902332
 Transform:
   m_ObjectHideFlags: 0

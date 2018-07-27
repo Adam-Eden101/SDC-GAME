@@ -11,12 +11,10 @@ public class GameGenerator : MonoBehaviour {
     private GameObject[]        letters;
     private GameObject[]        dismissed;
     private AudioSource         sound;
-    private bool                gameAlive;
 
     // Use this for initialization
     void Start()
     {
-        gameAlive = true;
         if (nb_letters < 5)
             nb_letters = 5;
         if (max_turns == 0)
@@ -26,7 +24,7 @@ public class GameGenerator : MonoBehaviour {
             timer = 5;
         }
         curr_timer = timer;
-        InvokeRepeating("curr_timer", 0, 1.0);
+        InvokeRepeating("_main", 0, 2);
     }
 	
 	// Update is called once per frame
@@ -35,16 +33,12 @@ public class GameGenerator : MonoBehaviour {
         if (turns <= max_turns)
         {
             if (curr_timer <= 0)
-            {
+            {/*
                 dismissed = GameObject.FindGameObjectsWithTag("Dismissed");
                 _main();
                 turns++;
-                curr_timer = timer;
+                curr_timer = timer;*/
             }
-        }
-        else
-        {
-            gameAlive = false;0
         }
     }
     
@@ -55,12 +49,16 @@ public class GameGenerator : MonoBehaviour {
 
     void _main()
     {
+        dismissed = GameObject.FindGameObjectsWithTag("Dismissed");
         reinit();
         initLetters();
+        turns++;
+        curr_timer = timer;
     }
 
     void reinit()
     {
+        dismissed = GameObject.FindGameObjectsWithTag("Dismissed");
         Debug.Log(dismissed.Length);
 
         foreach (GameObject item in dismissed)
