@@ -141,7 +141,7 @@ public class GameGenerator : MonoBehaviour
             }
             i++;
         }
-
+            
         dismissed = GameObject.FindGameObjectsWithTag("Dismissed");
         foreach (GameObject item in dismissed)
             item.SetActive(false);
