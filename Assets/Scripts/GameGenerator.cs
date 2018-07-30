@@ -4,15 +4,15 @@ using UnityEngine;
 
 public class GameGenerator : MonoBehaviour
 {
-    public int                  nb_letters;
-    private GameObject[]        letters;
-    private GameObject[]        dismissed;
-    public int                  max_turns;
-    public int                  timer;
-    private int                 curr_timer;
-    private int                 turns = 0;
-    private AudioSource         sound;
-    private bool                gameAlive;
+    public int nb_letters;
+    private GameObject[] letters;
+    private GameObject[] dismissed;
+    public int max_turns;
+    public int timer;
+    private int curr_timer;
+    private int turns = 0;
+    private AudioSource sound;
+    private bool gameAlive;
 
     IDictionary<char, GameObject[]> sprites;
 
@@ -34,8 +34,8 @@ public class GameGenerator : MonoBehaviour
         if (max_turns == 0)
             max_turns = 5;
 
-        InvokeRepeating("changeLetters", 1.0f, 3.0f);
-       
+        InvokeRepeating("changeLetters", 1.0f, 10.0f);
+
     }
 
     // Update is called once per frame
@@ -44,7 +44,7 @@ public class GameGenerator : MonoBehaviour
 
     }
 
-    void changeLetters()
+    public void changeLetters()
     {
         //TO CHANGE
         char letter_to_find = GetRandomLetter();
@@ -53,8 +53,7 @@ public class GameGenerator : MonoBehaviour
         List<GameObject> sprite_to_render = new List<GameObject>();
 
         playLetterSound(letter_to_find);
-
-
+        
         for (int i = 0; i < 100; i++)
         {
             char c = GetRandomLetter();
@@ -78,20 +77,24 @@ public class GameGenerator : MonoBehaviour
         {
             nbr_sprite_letter_to_find++;
         }
-        
+
         letters = GameObject.FindGameObjectsWithTag("Letter");
         int amount = 0;
         foreach (GameObject item in letters)
         {
             SpriteRenderer render = item.GetComponent<SpriteRenderer>();
             render.sprite = sprite_to_render[Random.Range(0, 100)].GetComponent<SpriteRenderer>().sprite;
+            render.color = Color.white;
+            item.GetComponent<LetterController>().isWin = false;
             amount++;
         }
         for (int n = 0; n < nbr_of_letter_possibly_to_find; n++)
         {
-            letters[Random.Range(0, amount)].GetComponent<SpriteRenderer>().sprite = sprites[letter_to_find][Random.Range(0, nbr_sprite_letter_to_find)].GetComponent<SpriteRenderer>().sprite;
+            int tmp = Random.Range(0, amount);
+            letters[tmp].GetComponent<SpriteRenderer>().sprite = sprites[letter_to_find][Random.Range(0, nbr_sprite_letter_to_find)].GetComponent<SpriteRenderer>().sprite;
+            letters[tmp].GetComponent<LetterController>().isWin = true;
         }
-
+ 
     }
 
     static char GetRandomLetter()

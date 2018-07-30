@@ -33,6 +33,7 @@ TagManager:
   - Letter_Z
   - Letter
   - Dismissed
+  - GameGenerator
   layers:
   - Default
   - TransparentFX
