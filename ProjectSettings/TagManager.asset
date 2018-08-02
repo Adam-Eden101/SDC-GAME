@@ -35,6 +35,7 @@ TagManager:
   - Dismissed
   - GameGenerator
   - Flip
+  - ScoreObject
   layers:
   - Default
   - TransparentFX

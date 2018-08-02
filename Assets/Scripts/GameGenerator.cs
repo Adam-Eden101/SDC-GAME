@@ -16,14 +16,20 @@ public class GameGenerator : MonoBehaviour
     public float waitTime;
     public AudioSource correctObject;
 
+    private ScoreClass score;
+
     float timer;
     IDictionary<char, GameObject[]> sprites;
 
     // Use this for initialization
     void Start()
     {
+        score = GameObject.FindGameObjectWithTag("ScoreObject").GetComponent<ScoreClass>();
+
         // Init ressource needed before changin letters and needed only once
         sprites = new Dictionary<char, GameObject[]>();
+
+        resetScore();
 
         for (char c = 'A'; c <= 'Z'; c++)
         {
@@ -39,7 +45,7 @@ public class GameGenerator : MonoBehaviour
         gameAlive = true;
         //InvokeRepeating("changeLetters", 1.0f, 10.0f);
         changeLetters();
-
+        InvokeRepeating("timerIncrement", 1f, 1f);
     }
 
     // Update is called once per frame
@@ -61,18 +67,9 @@ public class GameGenerator : MonoBehaviour
 
     void endGame()
     {
-        sound = (GameObject.Find("SoundObject")).GetComponent<AudioSource>();
-        sound.clip = Resources.Load<AudioClip>("Tada");
-        gameAlive = false;
-
-        Destroy(GameObject.Find("Canvas"));
-        Destroy(GameObject.Find("Background1"));
-        Destroy(GameObject.Find("Background2"));
-        foreach (GameObject letter in letters)
-        {
-            Destroy(letter);
-        }
-
+        CancelInvoke();
+        DontDestroyOnLoad(GameObject.FindGameObjectWithTag("ScoreObject"));
+        SceneManager.LoadScene("EndScene", LoadSceneMode.Single);
     }
 
     public void playCorrectSound()
@@ -181,6 +178,11 @@ public class GameGenerator : MonoBehaviour
     {
         sound.Play();
     }
+    
+    void timerIncrement()
+    {
+        score.countSeconds += 1;
+    }
 
     void initLetters()
     {
@@ -213,5 +215,14 @@ public class GameGenerator : MonoBehaviour
             array[t] = array[r];
             array[r] = tmp;
         }
+    }
+
+    void resetScore()
+    {
+        score.wrongAnswer = 0;
+        score.goodAnswer = 0;
+        score.timeOut = 0;
+        score.score = 0;
+        score.countSeconds = 0;
     }
 }
