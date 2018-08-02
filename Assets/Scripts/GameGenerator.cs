@@ -6,15 +6,14 @@ using UnityEngine.SceneManagement;
 public class GameGenerator : MonoBehaviour
 {
     public int nb_letters;
+    public Sprite bgsprite2;
     private GameObject[] letters;
     private GameObject[] dismissed;
     public int max_turns;
-    //public int timer;
-    private int curr_timer;
     private int turns = 0;
     private AudioSource sound;
     private bool gameAlive;
-    public float waitTime = 5f;
+    public float waitTime;
 
     float timer;
     IDictionary<char, GameObject[]> sprites;
@@ -51,8 +50,6 @@ public class GameGenerator : MonoBehaviour
             if (timer > waitTime)
             {
                 changeLetters();
-                print("Timer is done");
-                timer = 0f;
             }
             if (turns >= max_turns)
             {
@@ -63,11 +60,21 @@ public class GameGenerator : MonoBehaviour
 
     void endGame()
     {
-        Debug.Log("end game");
+        sound = (GameObject.Find("SoundObject")).GetComponent<AudioSource>();
+        sound.clip = Resources.Load<AudioClip>("Tada");
         gameAlive = false;
+
+        Destroy(GameObject.Find("Canvas"));
+        Destroy(GameObject.Find("Background2"));
+        foreach (GameObject letter in letters)
+        {
+            Destroy(letter);
+        }
     }
     public void changeLetters()
     {
+        timer = 0f;
+
         //TO CHANGE
         char letter_to_find = GetRandomLetter();
         int nbr_of_letter_possibly_to_find = Random.Range(1, 5);
@@ -116,6 +123,16 @@ public class GameGenerator : MonoBehaviour
             letters[tmp].GetComponent<SpriteRenderer>().sprite = sprites[letter_to_find][Random.Range(0, nbr_sprite_letter_to_find)].GetComponent<SpriteRenderer>().sprite;
             letters[tmp].GetComponent<LetterController>().isWin = true;
         }
+
+        if (turns == 10)
+        {
+            GameObject background;
+            background = GameObject.Find("Background1");
+            background.SetActive(false);
+
+        }
+
+
         turns++;
     }
 
@@ -151,7 +168,7 @@ public class GameGenerator : MonoBehaviour
         Invoke("playLetter", 0.5f);
     }
 
-    void playLetter()
+    public void playLetter()
     {
         sound.Play();
     }
