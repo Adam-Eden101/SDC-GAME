@@ -14,6 +14,7 @@ public class GameGenerator : MonoBehaviour
     private AudioSource sound;
     private bool gameAlive;
     public float waitTime;
+    public AudioSource correctObject;
 
     float timer;
     IDictionary<char, GameObject[]> sprites;
@@ -65,12 +66,20 @@ public class GameGenerator : MonoBehaviour
         gameAlive = false;
 
         Destroy(GameObject.Find("Canvas"));
+        Destroy(GameObject.Find("Background1"));
         Destroy(GameObject.Find("Background2"));
         foreach (GameObject letter in letters)
         {
             Destroy(letter);
         }
+
     }
+
+    public void playCorrectSound()
+    {
+        correctObject.Play();
+    }
+
     public void changeLetters()
     {
         timer = 0f;

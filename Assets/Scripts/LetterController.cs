@@ -24,6 +24,7 @@ public class LetterController : MonoBehaviour {
         if (isWin)
         {
             gameGenerator.changeLetters();
+            gameGenerator.playCorrectSound();
         } else
         {
             GetComponent<SpriteRenderer>().color = Color.red;
