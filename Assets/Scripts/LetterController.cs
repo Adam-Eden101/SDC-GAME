@@ -21,14 +21,13 @@ public class LetterController : MonoBehaviour {
     void OnMouseDown()
     {
         // this object was clicked - do something
-        Debug.Log(isWin);
         if (isWin)
         {
             gameGenerator.changeLetters();
         } else
         {
             GetComponent<SpriteRenderer>().color = Color.red;
-            Debug.Log("RATÉ");
+            //Debug.Log("RATÉ");
         }
     }
 

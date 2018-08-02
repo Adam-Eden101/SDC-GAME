@@ -2333,7 +2333,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   nb_letters: 0
   max_turns: 0
-  timer: 0
+  waitTime: 5
 --- !u!4 &928075921
 Transform:
   m_ObjectHideFlags: 0

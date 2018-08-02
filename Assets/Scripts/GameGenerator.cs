@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameGenerator : MonoBehaviour
 {
@@ -8,12 +9,14 @@ public class GameGenerator : MonoBehaviour
     private GameObject[] letters;
     private GameObject[] dismissed;
     public int max_turns;
-    public int timer;
+    //public int timer;
     private int curr_timer;
     private int turns = 0;
     private AudioSource sound;
     private bool gameAlive;
+    public float waitTime = 5f;
 
+    float timer;
     IDictionary<char, GameObject[]> sprites;
 
     // Use this for initialization
@@ -33,17 +36,36 @@ public class GameGenerator : MonoBehaviour
             nb_letters = 5;
         if (max_turns == 0)
             max_turns = 5;
-
-        InvokeRepeating("changeLetters", 1.0f, 10.0f);
+        gameAlive = true;
+        //InvokeRepeating("changeLetters", 1.0f, 10.0f);
+        changeLetters();
 
     }
 
     // Update is called once per frame
     void Update()
     {
-
+        if (gameAlive)
+        {
+            timer += Time.deltaTime;
+            if (timer > waitTime)
+            {
+                changeLetters();
+                print("Timer is done");
+                timer = 0f;
+            }
+            if (turns >= max_turns)
+            {
+                endGame();
+            }
+        }
     }
 
+    void endGame()
+    {
+        Debug.Log("end game");
+        gameAlive = false;
+    }
     public void changeLetters()
     {
         //TO CHANGE
@@ -94,7 +116,7 @@ public class GameGenerator : MonoBehaviour
             letters[tmp].GetComponent<SpriteRenderer>().sprite = sprites[letter_to_find][Random.Range(0, nbr_sprite_letter_to_find)].GetComponent<SpriteRenderer>().sprite;
             letters[tmp].GetComponent<LetterController>().isWin = true;
         }
- 
+        turns++;
     }
 
     static char GetRandomLetter()
@@ -126,6 +148,11 @@ public class GameGenerator : MonoBehaviour
         sound = (GameObject.Find("SoundObject")).GetComponent<AudioSource>();
 
         sound.clip = Resources.Load<AudioClip>(letter.ToString());
+        Invoke("playLetter", 0.5f);
+    }
+
+    void playLetter()
+    {
         sound.Play();
     }
 
