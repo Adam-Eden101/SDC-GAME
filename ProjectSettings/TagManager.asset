@@ -34,6 +34,7 @@ TagManager:
   - Letter
   - Dismissed
   - GameGenerator
+  - Flip
   layers:
   - Default
   - TransparentFX
