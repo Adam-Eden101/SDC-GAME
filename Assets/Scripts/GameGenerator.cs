@@ -6,22 +6,23 @@ using TMPro;
 
 public class GameGenerator : MonoBehaviour
 {
-    public int nb_letters;
-    public Sprite bgsprite2;
-    private GameObject[] letters;
-    private GameObject[] dismissed;
-    public int max_turns;
-    private int turns = 0;
-    private AudioSource sound;
-    private bool gameAlive;
-    public float waitTime;
-    public AudioSource correctObject;
-    private GameObject timerObject;
-    private int turnTimer;
+    public int              nb_letters;
+    public int              max_turns;
+    public float            waitTime;
+    public Sprite           bgsprite2;
+    public AudioSource      correctObject;
 
-    private ScoreClass score;
+    private int             turnTimer;
+    private int             turns = 0;
+    private bool            gameAlive;
+    private AudioSource     sound;
+    private GameObject      timerObject;
+    private GameObject[]    letters;
+    private GameObject[]    dismissed;
 
-    float timer;
+    private ScoreClass      score;
+
+    float                   timer;
     IDictionary<char, GameObject[]> sprites;
 
     // Use this for initialization
@@ -31,11 +32,13 @@ public class GameGenerator : MonoBehaviour
         score = GameObject.FindGameObjectWithTag("ScoreObject").GetComponent<ScoreClass>();
         turnTimer = (int)waitTime;
         timerObject.GetComponent<TextMeshProUGUI>().text = turnTimer.ToString();
-        // Init ressource needed before changin letters and needed only once
+
         sprites = new Dictionary<char, GameObject[]>();
 
+        // Permet de reset le score à 0 dans le cas où le joueur rejoue
         resetScore();
 
+        // Remplissage du tableau de sprites
         for (char c = 'A'; c <= 'Z'; c++)
         {
             sprites[c] = GameObject.FindGameObjectsWithTag("Letter_" + c);
@@ -43,12 +46,14 @@ public class GameGenerator : MonoBehaviour
 
         letters = GameObject.FindGameObjectsWithTag("Letters");
 
+        // Initialisation des valeurs par défaut
         if (nb_letters < 5)
             nb_letters = 5;
         if (max_turns == 0)
             max_turns = 5;
         gameAlive = true;
-        //InvokeRepeating("changeLetters", 1.0f, 10.0f);
+
+        // On lance la boucle via changeLetter, puis on lance un timer
         Invoke("changeLetters", 0.25f);
         InvokeRepeating("timerIncrement", 1.25f, 1f);
     }
@@ -61,16 +66,20 @@ public class GameGenerator : MonoBehaviour
             timer += Time.deltaTime;
             if (timer > waitTime)
             {
+                // Si le timer expire, le joueur perd sur ce tour.
+                // On change les lettres et on ajoute 1 au nombre de timeouts
                 score.timeOut++;
                 changeLetters();
             }
             if (turns >= max_turns)
             {
+                // Si le nombre de tour souhaité est atteint, le jeu se termine
                 endGame();
             }
         }
     }
 
+    // On arrête la boucle, on garde l'objet GameScore et on change de scène
     void endGame()
     {
         CancelInvoke();
@@ -78,23 +87,26 @@ public class GameGenerator : MonoBehaviour
         SceneManager.LoadScene("EndScene", LoadSceneMode.Single);
     }
 
+    // Petit sound effect en cas de réussite
     public void playCorrectSound()
     {
         correctObject.Play();
     }
 
+    // 
     public void changeLetters()
     {
         timer = 0f;
         turnTimer = (int)waitTime;
         timerObject.GetComponent<TextMeshProUGUI>().text = turnTimer.ToString();
-        //TO CHANGE
+        
+        // On récupère une chaise aléatoire et on joue le son associé
         char letter_to_find = GetRandomLetter();
         int nbr_of_letter_possibly_to_find = Random.Range(1, 5);
         List<GameObject> sprite_to_render = new List<GameObject>();
-
         playLetterSound(letter_to_find);
         
+        // On donne des valeurs aux sprites
         for (int i = 0; i < 100; i++)
         {
             char c = GetRandomLetter();
@@ -113,12 +125,14 @@ public class GameGenerator : MonoBehaviour
             }
         }
 
+        // On récupère les bonnes lettres
         int nbr_sprite_letter_to_find = 0;
         foreach (GameObject tmp in sprites[letter_to_find])
         {
             nbr_sprite_letter_to_find++;
         }
 
+        // On assigne les sprites aux bonnes lettres
         letters = GameObject.FindGameObjectsWithTag("Letter");
         int amount = 0;
         foreach (GameObject item in letters)
@@ -136,6 +150,7 @@ public class GameGenerator : MonoBehaviour
             letters[tmp].GetComponent<LetterController>().isWin = true;
         }
 
+        // Au tour 10, on change de background
         if (turns == 10)
         {
             GameObject background;
@@ -143,8 +158,7 @@ public class GameGenerator : MonoBehaviour
             background.SetActive(false);
 
         }
-
-
+        
         turns++;
     }
 
@@ -155,23 +169,6 @@ public class GameGenerator : MonoBehaviour
         return let;
     }
 
-    void _main()
-    {
-        reinit();
-        initLetters();
-    }
-
-    void reinit()
-    {
-
-        foreach (GameObject item in dismissed)
-        {
-            item.tag = "Letter";
-            item.SetActive(true);
-        }
-
-    }
-
     void playLetterSound(char letter)
     {
         sound = (GameObject.Find("SoundObject")).GetComponent<AudioSource>();
@@ -180,6 +177,7 @@ public class GameGenerator : MonoBehaviour
         Invoke("playLetter", 0.5f);
     }
 
+    // playLetterSound et playLetter sont séparées pour pouvoir accéder à playLetter depuis un bouton "réécouter"
     public void playLetter()
     {
         sound.Play();
@@ -192,39 +190,7 @@ public class GameGenerator : MonoBehaviour
         score.countSeconds += 1;
     }
 
-    void initLetters()
-    {
-        int i = 0;
-
-        letters = GameObject.FindGameObjectsWithTag("Letter");
-        reshuffle(letters);
-
-        foreach (GameObject item in letters)
-        {
-            if (i >= nb_letters)
-            {
-                item.tag = "Dismissed";
-            }
-            i++;
-        }
-            
-        dismissed = GameObject.FindGameObjectsWithTag("Dismissed");
-        foreach (GameObject item in dismissed)
-            item.SetActive(false);
-    }
-
-    void reshuffle(GameObject[] array)
-    {
-        // Knuth shuffle algorithm :: courtesy of Wikipedia :)
-        for (int t = 0; t < array.Length; t++)
-        {
-            GameObject tmp = array[t];
-            int r = Random.Range(t, array.Length);
-            array[t] = array[r];
-            array[r] = tmp;
-        }
-    }
-
+    // Réinitialisation du score
     void resetScore()
     {
         score.wrongAnswer = 0;

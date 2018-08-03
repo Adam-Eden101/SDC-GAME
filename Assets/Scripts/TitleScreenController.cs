@@ -3,21 +3,18 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class TitleScreenController : MonoBehaviour {
-    GameObject[] flippeds;
+    GameObject[] sprites_to_flip;
+
 	// Use this for initialization
 	void Start () {
-        flippeds = GameObject.FindGameObjectsWithTag("Flip");
+        sprites_to_flip = GameObject.FindGameObjectsWithTag("Flip");
         InvokeRepeating("Flip", 0, 1f);
 	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
 
+    // Faire bouger les fleurs
     void Flip()
     {
-        foreach (GameObject flipped in flippeds)
+        foreach (GameObject flipped in sprites_to_flip)
             flipped.GetComponent<SpriteRenderer>().flipX = !flipped.GetComponent<SpriteRenderer>().flipX;
     }
 

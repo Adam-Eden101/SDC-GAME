@@ -10,19 +10,14 @@ public class BackgroundController : MonoBehaviour
     public Sprite on;
     public Sprite off;
 
-    // Use this for initialization
+    // Permet de gérer les éléments de fond dans la scène de départ
     void Start()
     {
         sprite = gameObject.GetComponent<SpriteRenderer>();
         song = gameObject.GetComponent<AudioSource>();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
-
+    // Permet d'éteindre et d'allumer la musique de fond avec un bouton
     void OnMouseDown()
     {
         if (sprite.sprite == on)

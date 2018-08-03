@@ -3,18 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
+// Class liée au bouton start
 public class StartGame : MonoBehaviour {
 
-	// Use this for initialization
-	void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-
-    }
-
+    // lancer le jeu
     public void changeScene()
     {
         SceneManager.LoadScene("SampleScene", LoadSceneMode.Single);

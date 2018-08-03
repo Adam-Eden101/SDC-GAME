@@ -16,7 +16,8 @@ public class PrintScore : MonoBehaviour {
     [DllImport("__Internal")]
     private static extern void SendScore(int score);
 
-	// Use this for initialization
+	// Lorsqu'on arrive dans la scène de fin, on récupère les différentes variables de score
+    // On les affiche et on envoie le nombre de bonnes réponses
 	void Start () {
         	score = GameObject.FindGameObjectWithTag("ScoreObject").GetComponent<ScoreClass>();
 			goodAnswer.text = score.goodAnswer.ToString() + " / 20";
@@ -24,10 +25,5 @@ public class PrintScore : MonoBehaviour {
 			totalTime.text = score.countSeconds.ToString() + " secondes au total.";
 			timeOuts.text = score.timeOut.ToString() + " timeouts.";
 	       	SendScore(score.goodAnswer);
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
 	}
 }
