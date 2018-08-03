@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.SceneManagement;
 using UnityEngine;
 
 public class LetterController : MonoBehaviour {
@@ -33,7 +34,6 @@ public class LetterController : MonoBehaviour {
         {
             GetComponent<SpriteRenderer>().color = Color.red;
             score.wrongAnswer += 1;
-            //Debug.Log("RATÉ");
         }
     }
 

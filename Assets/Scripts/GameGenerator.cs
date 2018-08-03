@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using TMPro;
 
 public class GameGenerator : MonoBehaviour
 {
@@ -15,6 +16,8 @@ public class GameGenerator : MonoBehaviour
     private bool gameAlive;
     public float waitTime;
     public AudioSource correctObject;
+    private GameObject timerObject;
+    private int turnTimer;
 
     private ScoreClass score;
 
@@ -24,8 +27,10 @@ public class GameGenerator : MonoBehaviour
     // Use this for initialization
     void Start()
     {
+        timerObject = GameObject.Find("Timer");
         score = GameObject.FindGameObjectWithTag("ScoreObject").GetComponent<ScoreClass>();
-
+        turnTimer = (int)waitTime;
+        timerObject.GetComponent<TextMeshProUGUI>().text = turnTimer.ToString();
         // Init ressource needed before changin letters and needed only once
         sprites = new Dictionary<char, GameObject[]>();
 
@@ -44,8 +49,8 @@ public class GameGenerator : MonoBehaviour
             max_turns = 5;
         gameAlive = true;
         //InvokeRepeating("changeLetters", 1.0f, 10.0f);
-        changeLetters();
-        InvokeRepeating("timerIncrement", 1f, 1f);
+        Invoke("changeLetters", 0.25f);
+        InvokeRepeating("timerIncrement", 1.25f, 1f);
     }
 
     // Update is called once per frame
@@ -56,6 +61,7 @@ public class GameGenerator : MonoBehaviour
             timer += Time.deltaTime;
             if (timer > waitTime)
             {
+                score.timeOut++;
                 changeLetters();
             }
             if (turns >= max_turns)
@@ -80,11 +86,11 @@ public class GameGenerator : MonoBehaviour
     public void changeLetters()
     {
         timer = 0f;
-
+        turnTimer = (int)waitTime;
+        timerObject.GetComponent<TextMeshProUGUI>().text = turnTimer.ToString();
         //TO CHANGE
         char letter_to_find = GetRandomLetter();
         int nbr_of_letter_possibly_to_find = Random.Range(1, 5);
-
         List<GameObject> sprite_to_render = new List<GameObject>();
 
         playLetterSound(letter_to_find);
@@ -181,6 +187,8 @@ public class GameGenerator : MonoBehaviour
     
     void timerIncrement()
     {
+        turnTimer--;
+        timerObject.GetComponent<TextMeshProUGUI>().text = turnTimer.ToString();
         score.countSeconds += 1;
     }
 
@@ -222,7 +230,6 @@ public class GameGenerator : MonoBehaviour
         score.wrongAnswer = 0;
         score.goodAnswer = 0;
         score.timeOut = 0;
-        score.score = 0;
         score.countSeconds = 0;
     }
 }
