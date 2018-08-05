@@ -3,7 +3,39 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - Letters
+  - Letter_A
+  - Letter_B
+  - Letter_C
+  - Letter_D
+  - Letter_E
+  - Letter_F
+  - Letter_G
+  - Letter_H
+  - Letter_I
+  - Letter_K
+  - Letter_L
+  - Letter_J
+  - Letter_M
+  - Letter_N
+  - Letter_O
+  - Letter_P
+  - Letter_Q
+  - Letter_R
+  - Letter_S
+  - Letter_T
+  - Letter_U
+  - Letter_V
+  - Letter_W
+  - Letter_X
+  - Letter_Y
+  - Letter_Z
+  - Letter
+  - Dismissed
+  - GameGenerator
+  - Flip
+  - ScoreObject
   layers:
   - Default
   - TransparentFX
